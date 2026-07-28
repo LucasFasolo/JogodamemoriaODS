@@ -283,38 +283,110 @@
     <script>
         // Base de Dados de ODS, Ações Positivas e Lixos (Distratores)
         const odsDatabase = [
-            {
-                id: 6,
-                odsTitle: "ODS 6: Água Potável",
-                actionTitle: "Captação de Água da Chuva",
-                successFeedback: "Excelente! Captar água da chuva reduz o consumo das redes públicas e preserva os mananciais.",
-                trashTitle: "Descarte de Óleo na Pia",
-                trashFeedback: "Alerta! Um único litro de óleo de cozinha pode poluir até 25 mil litros de água potável."
-            },
-            {
-                id: 12,
-                odsTitle: "ODS 12: Consumo Resp.",
-                actionTitle: "Compostagem de Orgânicos",
-                successFeedback: "Muito bem! A compostagem transforma restos de comida em adubo, reduzindo o lixo nos aterros.",
-                trashTitle: "Uso Excessivo de Sacolas",
-                trashFeedback: "Alerta! Sacolas plásticas levam mais de 400 anos para se decompor e poluem os oceanos."
-            },
-            {
-                id: 13,
-                odsTitle: "ODS 13: Ação Climática",
-                actionTitle: "Trocar Carro por Bicicleta",
-                successFeedback: "Boa! Optar por transportes limpos diminui drasticamente a emissão de CO₂ e gases estufa.",
-                trashTitle: "Queima de Resíduos/Folhas",
-                trashFeedback: "Alerta! Queimar lixo ou folhas libera fumaça tóxica e gases que aceleram o aquecimento global."
-            },
-            {
-                id: 15,
-                odsTitle: "ODS 15: Vida Terrestre",
-                actionTitle: "Plantar Árvores Nativas",
-                successFeedback: "Perfeito! Árvores nativas ajudam a recuperar o ecossistema, protegem o solo e atraem a fauna local.",
-                trashTitle: "Uso de Pesticidas Químicos",
-                trashFeedback: "Alerta! Pesticidas agressivos destroem micro-organismos vitais do solo e matam polinizadores como as abelhas."
-            }
+                  {
+                    id: 1,
+                    odsTitle: "ODS 1: Erradicação da Pobreza",
+                    actionTitle: "Doação para Fundos Locais",
+                    successFeedback: "Maravilhoso! Apoiar instituições locais ajuda a financiar programas de capacitação e geração de renda para quem mais precisa.",
+                    trashTitle: "Desperdício de Alimentos Úteis",
+                    trashFeedback: "Alerta! Jogar fora comida boa enquanto milhões passam fome agrava a desigualdade social e a pobreza extrema."
+                  },
+                  {
+                    id: 2,
+                    odsTitle: "ODS 2: Fome Zero e Agr. Sust.",
+                    actionTitle: "Apoio à Agricultura Familiar",
+                    successFeedback: "Excelente! Consumir de pequenos produtores fortalece a economia local e garante uma produção de alimentos mais sustentável.",
+                    trashTitle: "Descarte de Sobras de Refeições",
+                    trashFeedback: "Alerta! O desperdício de comida no prato sobrecarrega a cadeia de produção e reduz a oferta global de alimentos."
+                  },
+                  {
+                    id: 3,
+                    odsTitle: "ODS 3: Saúde e Bem-Estar",
+                    actionTitle: "Prática Diária de Exercícios",
+                    successFeedback: "Muito bem! Manter o corpo ativo previne doenças crônicas e melhora significativamente a saúde física e mental.",
+                    trashTitle: "Uso de Tabaco e Sedentarismo",
+                    trashFeedback: "Alerta! O tabagismo e a falta de atividades físicas reduzem a expectativa de vida e sobrecarregam os sistemas de saúde."
+                  },
+                  {
+                    id: 4,
+                    odsTitle: "ODS 4: Educação de Qualidade",
+                    actionTitle: "Doação de Livros Didáticos",
+                    successFeedback: "Boa! Compartilhar material educativo facilita o acesso ao conhecimento e promove uma aprendizagem inclusiva.",
+                    trashTitle: "Abandono de Estudos/Cursos",
+                    trashFeedback: "Alerta! Interromper a formação limita as oportunidades profissionais e desacelera o desenvolvimento social."
+                  },
+                  {
+                    id: 5,
+                    odsTitle: "ODS 5: Igualdade de Gênero",
+                    actionTitle: "Divisão Igualitária de Tarefas",
+                    successFeedback: "Perfeito! Dividir os trabalhos domésticos igualmente em casa combate estereótipos e promove a equidade real.",
+                    trashTitle: "Diferenciação Salarial por Gênero",
+                    trashFeedback: "Alerta! Pagar salários diferentes para a mesma função com base no gênero perpetua a injustiça e a exclusão social."
+                  },
+                  {
+                    id: 7,
+                    odsTitle: "ODS 7: Energia Limpa e Acess.",
+                    actionTitle: "Instalação de Painéis Solares",
+                    successFeedback: "Ótimo! Utilizar energia solar reduz a dependência de combustíveis fósseis e diminui a pegada de carbono.",
+                    trashTitle: "Luzes Acesas em Ambientes Vazios",
+                    trashFeedback: "Alerta! Deixar lâmpadas e aparelhos ligados sem necessidade desperdiça recursos escassos de energia."
+                  },
+                  {
+                    id: 8,
+                    odsTitle: "ODS 8: Trab. Decente e Cresc.",
+                    actionTitle: "Consumo de Negócios Locais",
+                    successFeedback: "Muito bem! Comprar no comércio do seu bairro gera empregos diretos e estimula a economia comunitária.",
+                    trashTitle: "Apoio a Empresas com Trabalho Análogo à Escravidão",
+                    trashFeedback: "Alerta! Financiar marcas que exploram trabalhadores viola direitos humanos e destrói a dignidade laboral."
+                  },
+                  {
+                    id: 9,
+                    odsTitle: "ODS 9: Indústria, Inov. e Infr.",
+                    actionTitle: "Apoio a Tecnologias Verdes",
+                    successFeedback: "Excelente! Incentivar inovações ecológicas moderniza as indústrias e protege os recursos naturais do planeta.",
+                    trashTitle: "Uso de Processos Industriais Poluentes",
+                    trashFeedback: "Alerta! Manter fábricas obsoletas sem filtros de poluentes destrói o ar e atrasa o desenvolvimento sustentável."
+                  },
+                  {
+                    id: 10,
+                    odsTitle: "ODS 10: Redução das Desigualdades",
+                    actionTitle: "Contratação Inclusiva e Diversa",
+                    successFeedback: "Boa! Oferecer oportunidades para minorias e grupos vulneráveis desconcentra a renda e promove a justiça.",
+                    trashTitle: "Prática de Preconceito Corporativo",
+                    trashFeedback: "Alerta! Discriminar pessoas por raça, orientação ou origem amplia o abismo socioeconômico."
+                  },
+                  {
+                    id: 11,
+                    odsTitle: "ODS 11: Cidades e Com. Sust.",
+                    actionTitle: "Uso do Transporte Público",
+                    successFeedback: "Perfeito! Utilizar ônibus ou metrô diminui o trânsito urbano e limpa o ar das grandes cidades.",
+                    trashTitle: "Ocupação de Áreas de Risco",
+                    trashFeedback: "Alerta! Construir em encostas ou margens de rios gera vulnerabilidade a desastres e ameaça vidas."
+                  },
+                  {
+                    id: 14,
+                    odsTitle: "ODS 14: Vida na Água",
+                    actionTitle: "Recolhimento de Lixo na Praia",
+                    successFeedback: "Maravilhoso! Retirar resíduos da areia impede que plásticos matem peixes, tartarugas e aves marinhas.",
+                    trashTitle: "Descarte de Bitucas na Areia",
+                    trashFeedback: "Alerta! Filtros de cigarro liberam substâncias tóxicas no oceano e poluem milhares de litros de água do mar."
+                  },
+                  {
+                    id: 16,
+                    odsTitle: "ODS 16: Paz, Justiça e Inst. Efic.",
+                    actionTitle: "Resolução Pacífica de Conflitos",
+                    successFeedback: "Boa! Priorizar o diálogo e a mediação constrói comunidades mais seguras, harmoniosas e unidas.",
+                    trashTitle: "Disseminação de Fake News e Ódio",
+                    trashFeedback: "Alerta! Espalhar mentiras e discursos agressivos corrói a democracia e enfraquece as instituições."
+                  },
+                  {
+                    id: 17,
+                    odsTitle: "ODS 17: Parcerias e Meios de Imp.",
+                    actionTitle: "Projetos de Voluntariado Coletivo",
+                    successFeedback: "Excelente! Unir forças entre cidadãos, ONGs e empresas potencializa o alcance das metas globais.",
+                    trashTitle: "Isolamento e Falta de Cooperação",
+                    trashFeedback: "Alerta! Agir de forma individualista impede a troca de tecnologias e atrasa os avanços da Agenda 2030."
+                  }
         ];
 
         let gameCards = [];

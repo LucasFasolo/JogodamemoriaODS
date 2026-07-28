@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memória Sustentável - ODS</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --danger: #c62828;
+            --dark: #37474f;
+            --light: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #e8f5e9;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            color: var(--danger);
+        }
+
+        .score {
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+            perspective: 1000px;
+        }
+
+        .card {
+            height: 140px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched {
+            transform: rotateY(180deg);
+            opacity: 0.6;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            font-size: 2rem;
+        }
+
+        .card-front {
+            background: white;
+            transform: rotateY(180deg);
+            border: 3px solid transparent;
+        }
+
+        .card[data-type="ods"] .card-front {
+            border-color: #2196f3;
+        }
+
+        .card[data-type="action"] .card-front {
+            border-color: #4caf50;
+        }
+
+        .card[data-type="trash"] .card-front {
+            border-color: #ff9800;
+            background-color: #ffe0b2;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .card[data-type="ods"] .badge {
+            background: #2196f3;
+        }
+
+        .card[data-type="action"] .badge {
+            background: #4caf50;
+        }
+
+        .card[data-type="trash"] .badge {
+            background: #e65100;
+        }
+
+        /* Modais de Feedback */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title.success {
+            color: var(--primary);
+        }
+
+        .modal-title.alert {
+            color: var(--danger);
+        }
+
+        .modal-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-btn:hover {
+            background: #1b5e20;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .start-screen {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>EcoMemória ODS</h1>
+    </header>
+
+    <!-- TELA INICIAL -->
+    <div id="start-screen" class="screen active">
+        <div class="start-screen">
+            <h2>Aprenda sobre Sustentabilidade Jogando!</h2>
+            <p style="margin: 20px 0; color: #555;">Encontre os pares corretos entre os Objetivos da ONU (ODS) e suas
+                Ações Práticas. Cuidado com as cartas de Lixo (Distratores)!</p>
+            <button class="modal-btn" onclick="startGame()">Iniciar Jogo (60s)</button>
+        </div>
+    </div>
+
+    <!-- TELA DE JOGO -->
+    <div id="game-screen" class="screen">
+        <div class="hud">
+            <div class="timer">Tempo: <span id="time-left">60</span>s</div>
+            <div class="score">Progresso: <span id="pairs-found">0</span>/<span id="total-pairs">0</span></div>
+        </div>
+        <div class="grid" id="game-grid"></div>
+    </div>
+
+    <!-- MODAL DE FEEDBACK -->
+    <div id="feedback-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title" class="modal-title">Feedback</h3>
+            <p id="modal-text" class="modal-text">Texto educativo aqui...</p>
+            <button class="modal-btn" onclick="closeModal()">Continuar</button>
+        </div>
+    </div>
+
+    <script>
+        // Base de Dados de ODS, Ações Positivas e Lixos (Distratores)
+        const odsDatabase = [
+            {
+                id: 6,
+                odsTitle: "ODS 6: Água Potável",
+                actionTitle: "Captação de Água da Chuva",
+                successFeedback: "Excelente! Captar água da chuva reduz o consumo das redes públicas e preserva os mananciais.",
+                trashTitle: "Descarte de Óleo na Pia",
+                trashFeedback: "Alerta! Um único litro de óleo de cozinha pode poluir até 25 mil litros de água potável."
+            },
+            {
+                id: 12,
+                odsTitle: "ODS 12: Consumo Resp.",
+                actionTitle: "Compostagem de Orgânicos",
+                successFeedback: "Muito bem! A compostagem transforma restos de comida em adubo, reduzindo o lixo nos aterros.",
+                trashTitle: "Uso Excessivo de Sacolas",
+                trashFeedback: "Alerta! Sacolas plásticas levam mais de 400 anos para se decompor e poluem os oceanos."
+            },
+            {
+                id: 13,
+                odsTitle: "ODS 13: Ação Climática",
+                actionTitle: "Trocar Carro por Bicicleta",
+                successFeedback: "Boa! Optar por transportes limpos diminui drasticamente a emissão de CO₂ e gases estufa.",
+                trashTitle: "Queima de Resíduos/Folhas",
+                trashFeedback: "Alerta! Queimar lixo ou folhas libera fumaça tóxica e gases que aceleram o aquecimento global."
+            },
+            {
+                id: 15,
+                odsTitle: "ODS 15: Vida Terrestre",
+                actionTitle: "Plantar Árvores Nativas",
+                successFeedback: "Perfeito! Árvores nativas ajudam a recuperar o ecossistema, protegem o solo e atraem a fauna local.",
+                trashTitle: "Uso de Pesticidas Químicos",
+                trashFeedback: "Alerta! Pesticidas agressivos destroem micro-organismos vitais do solo e matam polinizadores como as abelhas."
+            }
+        ];
+
+        let gameCards = [];
+        let flippedCards = [];
+        let pairsFound = 0;
+        let totalPairs = 0;
+        let timeLeft = 60;
+        let timerInterval = null;
+        let isProcessing = false;
+
+        function startGame() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+
+            pairsFound = 0;
+            timeLeft = 60;
+            flippedCards = [];
+            isProcessing = false;
+
+            document.getElementById('pairs-found').innerText = pairsFound;
+            document.getElementById('time-left').innerText = timeLeft;
+
+            buildBoard();
+            startTimer();
+        }
+
+        function buildBoard() {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+            gameCards = [];
+            totalPairs = odsDatabase.length;
+            document.getElementById('total-pairs').innerText = totalPairs;
+
+            // Criar cartas a partir da database
+            odsDatabase.forEach(item => {
+                // Carta ODS
+                gameCards.push({ id: item.id, type: 'ods', text: item.odsTitle });
+                // Carta Ação Prática
+                gameCards.push({ id: item.id, type: 'action', text: item.actionTitle });
+                // Carta Lixo (Distrator associado)
+                gameCards.push({ id: item.id, type: 'trash', text: item.trashTitle });
+            });
+
+            // Embaralhar cartas (Algoritmo Fisher-Yates)
+            for (let i = gameCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [gameCards[i], gameCards[j]] = [gameCards[j], gameCards[i]];
+            }
+
+            // Renderizar no Grid HTML
+            gameCards.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('card');
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.type = card.type;
+                cardEl.dataset.index = index;
+                cardEl.innerHTML = `
+                    <div class="card-face card-back">🌱</div>
+                    <div class="card-face card-front">
+                        <span class="badge">${card.type === 'ods' ? 'Objetivo' : card.type === 'action' ? 'Ação +' : 'Lixo'}</span>
+                        <p>${card.text}</p>
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', () => handleCardClick(cardEl));
+                grid.appendChild(cardEl);
+            });
+        }
+        function handleCardClick(cardEl) {
+            if (isProcessing || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+            cardEl.classList.add('flipped');
+            flippedCards.push(cardEl);
+
+            const currentType = cardEl.dataset.type;
+            const currentId = parseInt(cardEl.dataset.id);
+            const currentDbItem = odsDatabase.find(item => item.id === currentId);
+
+            // REGRA: Clicou em uma carta de LIXO (Distrator)
+            if (currentType === 'trash') {
+                isProcessing = true;
+                timeLeft = Math.max(0, timeLeft - 5);
+
+                // Penalidade de tempo
+                document.getElementById('time-left').innerText = timeLeft;
+                setTimeout(() => {
+                    showModal("🚨 Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
+                    cardEl.classList.remove('flipped');
+                    flippedCards = [];
+                }, 600);
+                return;
+            }
+
+            // Se virou duas cartas (Validação do Par)
+            if (flippedCards.length === 2) {
+                isProcessing = true;
+                const card1 = flippedCards[0];
+                const card2 = flippedCards[1];
+
+                const id1 = parseInt(card1.dataset.id);
+                const id2 = parseInt(card2.dataset.id);
+                const type1 = card1.dataset.type;
+                const type2 = card2.dataset.type;
+
+                // Checa se formam um par válido (Mesmo ID e tipos diferentes ODS <-> Ação)
+                if (id1 === id2 && type1 !== type2) {
+                    // Par correto
+                    setTimeout(() => {
+                        card1.classList.add('matched');
+                        card2.classList.add('matched');
+                        pairsFound++;
+                        document.getElementById('pairs-found').innerText = pairsFound;
+
+                        showModal("✅ Par Correto!", currentDbItem.successFeedback, 'success');
+                        flippedCards = [];
+                        checkWinCondition();
+                    }, 600);
+                } else {
+                    // Par incorreto
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                        isProcessing = false;
+                    }, 1200);
+                }
+            }
+        }
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time-left').innerText = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showModal("⌛ Fim de Tempo!", "O cronômetro zerou antes de você completar as ODS. Tente novamente para melhorar suas ações!", 'alert', true);
+                }
+            }, 1000);
+        }
+        function showModal(title, text, styleClass, isEndGame = false) {
+            const titleEl = document.getElementById('modal-title');
+            titleEl.innerText = title;
+            titleEl.className = `modal-title ${styleClass}`;
+
+            document.getElementById('modal-text').innerText = text;
+
+            const modal = document.getElementById('feedback-modal');
+            modal.classList.add('active');
+
+            if (isEndGame) {
+                // Altera o botão do modal para resetar o jogo
+                const btn = modal.querySelector('.modal-btn');
+                btn.innerText = "Jogar Novamente";
+                btn.onclick = () => {
+                    closeModal();
+                    document.getElementById('game-screen').classList.remove('active');
+                    document.getElementById('start-screen').classList.add('active');
+                    btn.innerText = "Continuar";
+                    btn.onclick = closeModal;
+                };
+            }
+        }
+        function closeModal() {
+            document.getElementById('feedback-modal').classList.remove('active');
+            isProcessing = false;
+        }
+        function checkWinCondition() {
+            if (pairsFound === totalPairs) {
+                clearInterval(timerInterval);
+                setTimeout(() => {
+                    showModal(`🏆 Vitória Sustentável!\n\nParabéns! Você encontrou todas as correspondências das ODS a tempo.\n\nTempo restante: ${timeLeft} segundos.`, 'success', true);
+                }, 500);
+            }
+        }
+    </script>
+</body>

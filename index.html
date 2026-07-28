@@ -324,13 +324,14 @@
         let timeLeft = 60;
         let timerInterval = null;
         let isProcessing = false;
+        let isPaused = false;
 
         function startGame() {
             document.getElementById('start-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
 
             pairsFound = 0;
-            timeLeft = 60;
+            timeLeft = 240;
             flippedCards = [];
             isProcessing = false;
 
@@ -445,6 +446,9 @@
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
+                // Se o jogo estiver pausado por um modal, não faz nada e espera
+                if (isPaused) return; 
+
                 timeLeft--;
                 document.getElementById('time-left').innerText = timeLeft;
 
@@ -455,6 +459,8 @@
             }, 1000);
         }
         function showModal(title, text, styleClass, isEndGame = false) {
+            isPaused = true;
+            
             const titleEl = document.getElementById('modal-title');
             titleEl.innerText = title;
             titleEl.className = `modal-title ${styleClass}`;
@@ -480,6 +486,7 @@
         function closeModal() {
             document.getElementById('feedback-modal').classList.remove('active');
             isProcessing = false;
+            isPaused = false;
         }
         function checkWinCondition() {
             if (pairsFound === totalPairs) {

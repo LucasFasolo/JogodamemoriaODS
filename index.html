@@ -42,16 +42,34 @@
             margin-bottom: 10px;
         }
 
+        .reset-btn {
+            background: #757575;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+       
+        .reset-btn:hover {
+            background: var(--dark);
+        }
+                
         .hud {
             display: flex;
             justify-content: space-between;
             background: white;
+            gap: 15px;
             padding: 15px 25px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             margin-bottom: 20px;
+            width: 100%;
         }
 
         .timer {
@@ -271,6 +289,7 @@
         <div class="hud">
             <div class="timer">Tempo: <span id="time-left">240</span>s</div>
             <div class="score">Progresso: <span id="pairs-found">0</span>/<span id="total-pairs">0</span></div>
+            <button class="reset-btn" onclick="startGame()"> Reiniciar</button>
         </div>
         <div class="grid" id="game-grid"></div>
     </div>
@@ -403,6 +422,8 @@
         let isPaused = false;
 
         function startGame() {
+            clearInterval(timerInterval);
+            
             document.getElementById('start-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
 
@@ -410,6 +431,7 @@
             timeLeft = 240;
             flippedCards = [];
             isProcessing = false;
+            isPaused = false;
 
             document.getElementById('pairs-found').innerText = pairsFound;
             document.getElementById('time-left').innerText = timeLeft;
@@ -473,7 +495,7 @@
                 
                 const currentDbItem = odsDatabase.find(item => item.id === parseInt(cardEl.dataset.id));
                 setTimeout(() => {
-                    showModal("🚨 Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
+                    showModal("Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
                     cardEl.classList.remove('flipped');
                     flippedCards = [];
                 }, 600);
@@ -496,7 +518,7 @@
                     
                     const currentDbItem = odsDatabase.find(item => item.id === id2);
                     setTimeout(() => {
-                        showModal("🚨 Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
+                        showModal("Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
                         // Desvira AMBAS as cartas para não travar o tabuleiro
                         card1.classList.remove('flipped');
                         card2.classList.remove('flipped');
@@ -512,7 +534,7 @@
                         pairsFound++;
                         document.getElementById('pairs-found').innerText = pairsFound;
                         
-                        showModal("✅ Par Correto!", currentDbItem.successFeedback, 'success');
+                        showModal("Par Correto!", currentDbItem.successFeedback, 'success');
                         flippedCards = [];
                         checkWinCondition();
                     }, 600);
@@ -539,7 +561,7 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    showModal("⌛ Fim de Tempo!", "O cronômetro zerou antes de você completar as ODS. Tente novamente para melhorar suas ações!", 'alert', true);
+                    showModal("Fim de Tempo!", "O cronômetro zerou antes de você completar as ODS. Tente novamente para melhorar suas ações!", 'alert', true);
                 }
             }, 1000);
         }
@@ -577,7 +599,7 @@
             if (pairsFound === totalPairs) {
                 clearInterval(timerInterval);
                 setTimeout(() => {
-                    showModal(`🏆 Vitória Sustentável!\n\nParabéns! Você encontrou todas as correspondências das ODS a tempo.\n\nTempo restante: ${timeLeft} segundos.`, 'success', true);
+                    showModal(`Vitória Sustentável!\n\nParabéns! Você encontrou todas as correspondências das ODS a tempo.\n\nTempo restante: ${timeLeft} segundos.`, 'success', true);
                 }, 500);
             }
         }

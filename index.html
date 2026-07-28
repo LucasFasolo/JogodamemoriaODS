@@ -321,7 +321,7 @@
         let flippedCards = [];
         let pairsFound = 0;
         let totalPairs = 0;
-        let timeLeft = 60;
+        let timeLeft = 240;
         let timerInterval = null;
         let isProcessing = false;
         let isPaused = false;
@@ -386,20 +386,16 @@
         }
         function handleCardClick(cardEl) {
             if (isProcessing || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+            
             cardEl.classList.add('flipped');
             flippedCards.push(cardEl);
 
-            const currentType = cardEl.dataset.type;
-            const currentId = parseInt(cardEl.dataset.id);
-            const currentDbItem = odsDatabase.find(item => item.id === currentId);
-
-            // REGRA: Clicou em uma carta de LIXO (Distrator)
-            if (currentType === 'trash') {
+            if (flippedCards.length === 1 && cardEl.dataset.type === 'trash') {
                 isProcessing = true;
                 timeLeft = Math.max(0, timeLeft - 5);
-
-                // Penalidade de tempo
                 document.getElementById('time-left').innerText = timeLeft;
+                
+                const currentDbItem = odsDatabase.find(item => item.id === parseInt(cardEl.dataset.id));
                 setTimeout(() => {
                     showModal("🚨 Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
                     cardEl.classList.remove('flipped');
@@ -408,32 +404,44 @@
                 return;
             }
 
-            // Se virou duas cartas (Validação do Par)
             if (flippedCards.length === 2) {
                 isProcessing = true;
                 const card1 = flippedCards[0];
                 const card2 = flippedCards[1];
-
+        
                 const id1 = parseInt(card1.dataset.id);
                 const id2 = parseInt(card2.dataset.id);
                 const type1 = card1.dataset.type;
                 const type2 = card2.dataset.type;
-
-                // Checa se formam um par válido (Mesmo ID e tipos diferentes ODS <-> Ação)
+        
+                if (type2 === 'trash') {
+                    timeLeft = Math.max(0, timeLeft - 5);
+                    document.getElementById('time-left').innerText = timeLeft;
+                    
+                    const currentDbItem = odsDatabase.find(item => item.id === id2);
+                    setTimeout(() => {
+                        showModal("🚨 Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
+                        // Desvira AMBAS as cartas para não travar o tabuleiro
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                    }, 600);
+                    return;
+                }
                 if (id1 === id2 && type1 !== type2) {
-                    // Par correto
+                    const currentDbItem = odsDatabase.find(item => item.id === id1);
                     setTimeout(() => {
                         card1.classList.add('matched');
                         card2.classList.add('matched');
                         pairsFound++;
                         document.getElementById('pairs-found').innerText = pairsFound;
-
+                        
                         showModal("✅ Par Correto!", currentDbItem.successFeedback, 'success');
                         flippedCards = [];
                         checkWinCondition();
                     }, 600);
                 } else {
-                    // Par incorreto
+                    // Par incorreto (duas cartas normais que não combinam)
                     setTimeout(() => {
                         card1.classList.remove('flipped');
                         card2.classList.remove('flipped');
@@ -443,6 +451,7 @@
                 }
             }
         }
+        
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {

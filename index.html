@@ -281,14 +281,14 @@
             <h2>Aprenda sobre Sustentabilidade Jogando!</h2>
             <p style="margin: 20px 0; color: #555;">Encontre os pares corretos entre os Objetivos da ONU (ODS) e suas
                 Ações Práticas. Cuidado com as cartas de Lixo (Distratores)!</p>
-            <button class="modal-btn" onclick="startGame()">Iniciar Jogo (240s)</button>
+            <button class="modal-btn" onclick="startGame()">Iniciar Jogo</button>
         </div>
     </div>
 
     <!-- TELA DE JOGO -->
     <div id="game-screen" class="screen">
         <div class="hud">
-            <div class="timer">Tempo: <span id="time-left">240</span>s</div>
+            <div class="timer">Tempo: <span id="time-left">300</span>s</div>
             <div class="score">Progresso: <span id="pairs-found">0</span>/<span id="total-pairs">0</span></div>
             <button class="reset-btn" onclick="startGame()"> Reiniciar</button>
         </div>
@@ -417,7 +417,7 @@
         let flippedCards = [];
         let pairsFound = 0;
         let totalPairs = 0;
-        let timeLeft = 240;
+        let timeLeft = 300;
         let timerInterval = null;
         let isProcessing = false;
         let isPaused = false;
@@ -429,7 +429,7 @@
             document.getElementById('game-screen').classList.add('active');
 
             pairsFound = 0;
-            timeLeft = 240;
+            timeLeft = 300;
             flippedCards = [];
             isProcessing = false;
             isPaused = false;

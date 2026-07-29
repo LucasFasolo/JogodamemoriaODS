@@ -497,7 +497,6 @@
                 const currentDbItem = odsDatabase.find(item => item.id === parseInt(cardEl.dataset.id));
                 setTimeout(() => {
                     showModal("Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
-                    cardEl.classList.remove('flipped');
                     flippedCards = [];
                 }, 600);
                 return;
@@ -520,9 +519,7 @@
                     const currentDbItem = odsDatabase.find(item => item.id === id2);
                     setTimeout(() => {
                         showModal("Ação Prejudicial!", currentDbItem.trashFeedback, 'alert');
-                        // Desvira AMBAS as cartas para não travar o tabuleiro
                         card1.classList.remove('flipped');
-                        card2.classList.remove('flipped');
                         flippedCards = [];
                     }, 600);
                     return;
@@ -540,7 +537,6 @@
                         checkWinCondition();
                     }, 600);
                 } else {
-                    // Par incorreto (duas cartas normais que não combinam)
                     setTimeout(() => {
                         card1.classList.remove('flipped');
                         card2.classList.remove('flipped');

@@ -481,13 +481,13 @@
             gameCards = [];
             const shuffledDb = [...odsDatabase].sort(() => Math.random() - 0.5);
 
-            const selected = shuffledDb.slice(0, MAX_PAIRS)
+            const selectedItems = shuffledDb.slice(0, MAX_PAIRS)
 
-            totalPairs = selectedItems.lenght;
+            totalPairs = selectedItems.length;
             document.getElementById('total-pairs').innerText = totalPairs;
 
             // Criar cartas a partir da database
-            selectedItens.forEach(item => {
+            selectedItems.forEach(item => {
                 // Carta ODS
                 gameCards.push({ id: item.id, type: 'ods', text: item.odsTitle });
                 // Carta Ação Prática
